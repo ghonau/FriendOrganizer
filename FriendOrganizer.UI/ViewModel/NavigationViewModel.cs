@@ -1,5 +1,6 @@
 ﻿using FriendOrganizer.Model;
 using FriendOrganizer.UI.Data;
+using FriendOrganizer.UI.Event;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,10 @@ namespace FriendOrganizer.UI.ViewModel
             {
                 _selectedFriend = value;
                 OnPropertyChanged(); 
+                if(_selectedFriend != null )
+                {
+                    _eventAggregator.GetEvent<OpenFriendDetaialViewEvent>().Publish(_selectedFriend.Id); 
+                }
             }
         }
 
