@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Data
 {
-    public class FriendLookupDataService : IFriendLookupDataService
+    public class LookupDataService : IFriendLookupDataService
     {
         Func<FriendOrganizerDbContext> _contextCreator;
-        public FriendLookupDataService(Func<FriendOrganizerDbContext> contextCreator)
+        public LookupDataService(Func<FriendOrganizerDbContext> contextCreator)
         {
             _contextCreator = contextCreator;
         }
+
 
         public async Task<IEnumerable<LookupItem>> GetFriendLookupAsync()
         {

@@ -14,28 +14,30 @@ namespace FriendOrganizer.UI.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        
-        
-        
-        
-      
+        public MainViewModel(INavigationViewModel navigationViewModel, IFriendDetailViewModel friendDetailViewModel)
+        { 
+            NavigationViewModel = navigationViewModel;
+            FriendDetailViewModel = friendDetailViewModel; 
 
-        public INavigationViewModel        NavigationViewModel { get; set; }
-        public IFriendDetailViewModel FriendDetailViewModel { get; }
-
-        public MainViewModel(INavigationViewModel navigationViewModel, IFriendDetailViewModel friendDetailViewModel )
-        {
-                NavigationViewModel = navigationViewModel;        
-            FriendDetailViewModel = friendDetailViewModel;
         }
-
-        
+        // main view model will take a dependency on the navigation and friend detail view model 
         public async Task LoadAsync()
         {
-            await NavigationViewModel.LoadAsync();
+                 NavigationViewModel.LoadAsync(); 
         }
-      
 
+        private IFriendDetailViewModel _friendDetailViewModel;
+        public IFriendDetailViewModel FriendDetailViewModel
+        {
+            get { return _friendDetailViewModel; }
+            private set
+            {
+                _friendDetailViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public INavigationViewModel NavigationViewModel { get; }
            
         
         

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FriendOrganizer.UI.ViewModel;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,11 @@ namespace FriendOrganizer.UI.View
     /// </summary>
     public partial class FriendDetailView : UserControl
     {
+        
         public FriendDetailView()
         {
-            InitializeComponent();
+            InitializeComponent();  
+            
         }
     }
 }

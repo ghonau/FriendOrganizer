@@ -28,6 +28,8 @@ namespace FriendOrganizer.UI
             // we are loading the data in the loaded event handler in the main window 
 
             Loaded += MainWindow_Loaded; 
+
+            
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)

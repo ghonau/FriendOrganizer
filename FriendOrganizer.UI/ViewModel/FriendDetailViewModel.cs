@@ -19,7 +19,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             _friendDataService = friendDataService;
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<OpenFriendDetaialViewEvent>().Subscribe(OnOpenFriendDetailView); 
+            _eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Subscribe(OnOpenFriendDetailView); 
         }
 
         private async void OnOpenFriendDetailView(int friendId)

@@ -11,6 +11,9 @@ namespace FriendOrganizer.UI.ViewModel
         public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            // This is our ViewModelBase class which implements INotifyPropertyChanged.
+
+
         }
     }
-}
+}   
