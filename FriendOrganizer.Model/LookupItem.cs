@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.Model
 {
-    public class LookupItem
+    public class NavigationItemViewModel
     {
         public int Id { get; set; } 
         public string DisplayMember { get; set; }

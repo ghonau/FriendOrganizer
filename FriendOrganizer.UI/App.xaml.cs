@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using System.Windows.Controls.Ribbon.Primitives;
 
 namespace FriendOrganizer.UI
 {
@@ -21,6 +22,21 @@ namespace FriendOrganizer.UI
 
 
             mainWindow.Show();
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("Uxpected error occured. Please inform the admin." + Environment.NewLine + e.Exception.Message, "Unexpected error");
+            e.Handled = true; 
+            
+           // We do not want to pulote the mdodel so we wilil be not handlding the INotifyDataErrorInfo in the 
+           // Model itself 
+           // We do not want to have them in the view model either as it is meant to deal with the view logic
+           // We will handle the INotifyDataErrorInfo in the model wrapper class
+
+            
+
+            
         }
     }
 

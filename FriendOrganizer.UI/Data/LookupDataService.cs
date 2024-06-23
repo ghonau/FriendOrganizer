@@ -18,12 +18,12 @@ namespace FriendOrganizer.UI.Data
         }
 
 
-        public async Task<IEnumerable<LookupItem>> GetFriendLookupAsync()
+        public async Task<IEnumerable<NavigationItemViewModel>> GetFriendLookupAsync()
         {
             using (var ctx = _contextCreator())
             {
                 return await ctx.Friends.AsNoTracking()
-                    .Select(f => new LookupItem { Id = f.Id, DisplayMember = f.FirstName + " " + f.LastName })
+                    .Select(f => new NavigationItemViewModel { Id = f.Id, DisplayMember = f.FirstName + " " + f.LastName })
                     .ToListAsync();
 
             }
