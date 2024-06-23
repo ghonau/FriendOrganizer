@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Wrapper
 {
-    public class FriendWrapper : ViewModelBase, INotifyDataErrorInfo 
+    public class FriendWrapper : NotifyDataErrorInfo  
     {
         public Friend Model { get; set; }
         public FriendWrapper(Friend friend)
@@ -80,6 +80,10 @@ namespace FriendOrganizer.UI.Wrapper
 
             }
         }
+        
+    }
+    public class NotifyDataErrorInfo : ViewModelBase,  INotifyDataErrorInfo 
+    {
         private Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
 
         public bool HasErrors => _errorsByPropertyName.Any();
@@ -92,34 +96,34 @@ namespace FriendOrganizer.UI.Wrapper
                 _errorsByPropertyName[propertyName] :
                 null;
         }
-        
+
 
         // OnErrorsChanged is our method to raise the ErrorsChanged event.
-        private void OnErrorsChanged(string propertyName)
+        protected virtual void OnErrorsChanged(string propertyName)
         {
 
-           ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
-        private void AddError(string propertyName, string error)
+        protected void AddError(string propertyName, string error)
         {
-           if(!_errorsByPropertyName.ContainsKey(propertyName))
+            if (!_errorsByPropertyName.ContainsKey(propertyName))
             {
                 _errorsByPropertyName[propertyName] = new List<string>();
             }
-            if(!_errorsByPropertyName[propertyName].Contains(error)) // Check to see if the 
-                // List already contains the error.
+            if (!_errorsByPropertyName[propertyName].Contains(error)) // Check to see if the 
+                                                                      // List already contains the error.
             {
                 _errorsByPropertyName[propertyName].Add(error);
                 OnErrorsChanged(propertyName);
                 // This is a method call which will raise the ErrorsChanged event. 
             }
         }
-        private void ClearErrors(string propertyName)
+        protected void ClearErrors(string propertyName)
         {
             if (_errorsByPropertyName.ContainsKey(propertyName))
             {
                 _errorsByPropertyName.Remove(propertyName);
-                OnErrorsChanged(propertyName); 
+                OnErrorsChanged(propertyName);
             }
         }
     }
