@@ -1,4 +1,5 @@
 ﻿using FriendOrganizer.DataAccess;
+using FriendOrganizer.DataAccess.Specifications;
 using FriendOrganizer.Model;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,18 @@ namespace FriendOrganizer.UI.Data
                 ctx.Entry(friend).State = EntityState.Modified;
                 await ctx.SaveChangesAsync();
             }
+        }
+        public async Task<Friend> GetByFirstName(string firstName)
+        {
+            using (var ctx = _contextCreator())
+            {
+              return await  ApplySpecification(ctx.Friends, new GetFriendByFirstNameSpecification(firstName)).FirstOrDefaultAsync();  
+            }
+        }
+
+        private IQueryable<Friend> ApplySpecification(IQueryable<Friend> input,  Specification<Friend> specification) 
+        {
+            return SpecificationEvaluator.GetQuery(input, specification);
         }
     }
 }
