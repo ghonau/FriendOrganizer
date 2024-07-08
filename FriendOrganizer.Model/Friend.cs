@@ -10,7 +10,10 @@ namespace FriendOrganizer.Model
         public string FirstName { get; set; } = string.Empty;
         [StringLength(50)]
         public string LastName { get; set; } = string.Empty;
-        [StringLength(50)]
-        public string Email { get; set; } = string.Empty; 
+
+        [EmailAddress]
+        public string Email { get; set; }  
+        public int? FavoriteLanguageId { get; set; }
+        public ProgrammingLanguage? FavoriteLanaguge { get; set; }
     }
 }

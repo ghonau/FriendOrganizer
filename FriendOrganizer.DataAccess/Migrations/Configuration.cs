@@ -23,7 +23,13 @@
                 new Model.Friend { FirstName = "Urs", LastName = "Meir" },
                 new Model.Friend { FirstName = "Erkan", LastName = "Egin" },
                 new Model.Friend { FirstName = "Sara", LastName = "Huber" }
-                ); 
+                );
+            context.programmingLanguages.AddOrUpdate(f => f.Name,
+                new Model.ProgrammingLanguage { Name = "C#" },
+                new Model.ProgrammingLanguage { Name = "TypeScript" },
+                new Model.ProgrammingLanguage { Name = "F#" },
+                new Model.ProgrammingLanguage { Name = "Java" },
+                new Model.ProgrammingLanguage { Name = "Swift" });
         }
     }
 }
