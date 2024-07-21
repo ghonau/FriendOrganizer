@@ -9,16 +9,22 @@ namespace FriendOrganizer.UI.ViewModel
     public class NavigationViewModel : ViewModelBase,  INavigationViewModel
     {
         public ObservableCollection<NavigationItemViewModel> Friends { get; }
+        public ObservableCollection<NavigationItemViewModel> Meetings { get; }
         private IFriendLookupDataService _friendLookupDataService;
+        private IMeetingLookupDataService _meetingLookupDataService;
         private IEventAggregator _eventAggregator;
 
-        public NavigationViewModel(IFriendLookupDataService friendLookupDataService, IEventAggregator eventAggregator)
+        public NavigationViewModel(IFriendLookupDataService friendLookupDataService,
+            IMeetingLookupDataService meetingLookupDataService,
+            IEventAggregator eventAggregator)
         {
             _friendLookupDataService = friendLookupDataService;
+            _meetingLookupDataService = meetingLookupDataService; 
             _eventAggregator = eventAggregator;
             Friends = new ObservableCollection<NavigationItemViewModel>();
-            _eventAggregator.GetEvent<AfterFriendSavedEvent>().Subscribe(AfterFriendSaved);
-            _eventAggregator.GetEvent<AfterFriendDeletedEvent>().Subscribe(AfterFriendDeletedEvent); 
+            Meetings = new ObservableCollection<NavigationItemViewModel>();
+            _eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailSaved);
+            _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeletedEvent); 
         }
 
         
@@ -31,47 +37,74 @@ namespace FriendOrganizer.UI.ViewModel
             Friends.Clear();
             foreach (var item in lookup)
             {
-                Friends.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator));
+                Friends.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator
+                    ,nameof(FriendDetailViewModel)));
               
+            }
+            lookup = await _meetingLookupDataService.GetMeetingLookupAsync();
+            Meetings.Clear();
+            foreach (var item in lookup)
+            {
+                Meetings.Add(new NavigationItemViewModel(item.Id, item.DisplayMember, _eventAggregator
+                    , nameof(MeetingDetailViewModel)));
+
             }
         }
 
-        private void AfterFriendDeletedEvent(int friendId)
+        private void AfterDetailDeletedEvent(AfterDetailDeletedEventArgs afterDetailDeletedEventArgs)
         {
-            var friend = Friends.SingleOrDefault(f => f.Id == friendId);
-            if (friend != null) 
+            switch (afterDetailDeletedEventArgs.ViewModelName)
             {
-                Friends.Remove(friend); 
+                case nameof(FriendDetailViewModel):
+                    {
+                        var friend = Friends.SingleOrDefault(f => f.Id ==  afterDetailDeletedEventArgs.Id);
+                        if (friend != null) 
+                        {
+                            Friends.Remove(friend); 
+                        }
+                        break;
+                    }
+                case nameof(MeetingDetailViewModel):
+                    {
+                        var meeting = Meetings.SingleOrDefault(f => f.Id == afterDetailDeletedEventArgs.Id);
+                        if (meeting != null)
+                        {
+                            Meetings.Remove(meeting);
+                        }
+                        break;
+                    }
             }
         }
-        private void AfterFriendSaved(AfterFriendSavedEventArgs args)
+        private void AfterDetailSaved(AfterDetailSavedEventArgs args)
         {
-            var lookupItem = Friends.SingleOrDefault(f => f.Id == args.Id);
+            switch (args.ViewModelName)
+            {
+                case nameof(FriendDetailViewModel):
+                    {
+                        CreateNavigationItemAfterDetailSaved(args, Friends);
+                        break;
+                    }
+                case nameof(MeetingDetailViewModel):
+                    {
+
+                        CreateNavigationItemAfterDetailSaved(args, Meetings); 
+                        break;
+                    }
+            }
+        }
+
+        private void CreateNavigationItemAfterDetailSaved(AfterDetailSavedEventArgs args, ObservableCollection<NavigationItemViewModel> items)           
+        {
+            var lookupItem = items.SingleOrDefault(f => f.Id == args.Id);
             if (lookupItem != null)
             {
                 lookupItem.DisplayMember = args.DisplayMember;
             }
             else
             {
-                Friends.Add(new NavigationItemViewModel(args.Id, args.DisplayMember, _eventAggregator));
+                Friends.Add(new NavigationItemViewModel(args.Id,
+                    args.DisplayMember, _eventAggregator, args.ViewModelName));
             }
         }
-        //private NavigationItemViewModel _selectedFriend; 
-        //public NavigationItemViewModel SelectedFriend {
-        //    get
-        //    {
-        //        return _selectedFriend; 
-        //    }
-        //    set
-        //    {
-        //        _selectedFriend = value;
-        //        OnPropertyChanged(); 
-        //        if(_selectedFriend != null )
-        //        {
-        //            _eventAggregator.GetEvent<OpenFriendDetailViewEvent>().Publish(_selectedFriend.Id); 
-        //        }
-        //    }
-        //}
-
     }
 }

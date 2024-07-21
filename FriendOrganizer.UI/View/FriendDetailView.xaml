@@ -18,8 +18,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label Margin="10,10,10,0" Content="FirstName" />
         <TextBox
@@ -59,7 +59,34 @@
             SelectedValue="{Binding Friend.FavoriteLanguageId}"
             SelectedValuePath="Id" />
 
-        <StackPanel Grid.Row="8" Orientation="Horizontal">
+        <DockPanel Grid.Row="8" Margin="10">
+            <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+                <Button
+                    Width="125"
+                    Margin="10"
+                    Command="{Binding AddPhoneNumberCommand}"
+                    Content="Add" />
+                <Button
+                    Width="125"
+                    Margin="10"
+                    Command="{Binding RemovePhoneNumberCommand}"
+                    Content="Remove" />
+            </StackPanel>
+            <DataGrid
+                AutoGenerateColumns="False"
+                ItemsSource="{Binding PhoneNumbers}"
+                RowHeaderWidth="0"
+                SelectedItem="{Binding SelectedPhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding Number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Header="Phone Numbers" />
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </DockPanel>
+        <StackPanel Grid.Row="9" Orientation="Horizontal">
             <Button
                 Width="125"
                 Margin="10"

@@ -1,6 +1,7 @@
 ﻿using FriendOrganizer.DataAccess;
 using FriendOrganizer.DataAccess.Specifications;
 using FriendOrganizer.Model;
+
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,50 +11,26 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Data.Repositories
 {
-    public class FriendRepository : IFriendRepository
+    public class FriendRepository : GenericRepository<Friend, FriendOrganizerDbContext>, IFriendRepository
     {
-        private FriendOrganizerDbContext _context;
-        public FriendRepository(FriendOrganizerDbContext  context)
-        {
-            _context = context;
-        }
-
-        public void Add(Friend frined)
-        {
-            _context.Friends.Add(frined);            
-        }      
-
-        public async Task<List<Friend>> GetAllAsync()
-        {           
-            return await _context.Friends.ToListAsync();        
-        }
-        public async Task<Friend> GetByIdAsync(int friendId)
+        
+        public FriendRepository(FriendOrganizerDbContext  context) : base(context)
         {
             
-            
-                
-            // We will be tracking the context changes in the db contex so we are removing NoTracking
-            // return await _context.Friends.AsNoTracking().SingleAsync(f => f.Id == friendId);
-            return await  _context.Friends.SingleAsync(f => f.Id == friendId);
+        }    
 
-        }
-
-        public bool HasChanges()
+        
+        public override async Task<Friend> GetByIdAsync(int friendId)
         {
-            return _context.ChangeTracker.HasChanges();
-        }
+            return await Context.Friends.Include(r=>r.PhoneNumbers).SingleAsync(f => f.Id == friendId);
+        }          
 
-        public void Remove(Friend model)
+        public void RemovePhoneNumber(FriendPhoneNumber model)
         {
-           _context.Friends.Remove(model);
-            
+            Context.FriendPhoneNumbers.Remove(model);
         }
 
-        public async Task SaveAsync()
-        {                                       
-           //db context already knows about the object
-            await _context.SaveChangesAsync();            
-        }
+       
        
     }
 }

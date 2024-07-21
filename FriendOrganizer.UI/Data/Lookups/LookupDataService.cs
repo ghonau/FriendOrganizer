@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace FriendOrganizer.UI.Data.Lookups
 {
-    public class LookupDataService : IFriendLookupDataService, IProgrammingLanguageLookupDataService
+    public class LookupDataService : 
+        IFriendLookupDataService, 
+        IProgrammingLanguageLookupDataService,
+        IMeetingLookupDataService
     {
         Func<FriendOrganizerDbContext> _contextCreator;
         public LookupDataService(Func<FriendOrganizerDbContext> contextCreator)
@@ -36,6 +39,16 @@ namespace FriendOrganizer.UI.Data.Lookups
             {
                 return await ctx.programmingLanguages.AsNoTracking()
                     .Select(f => new LookupItem { Id = f.Id, DisplayMember = f.Name })
+                    .ToListAsync();
+
+            }
+        }
+        public async Task<IEnumerable<LookupItem>> GetMeetingLookupAsync()
+        {
+            using (var ctx = _contextCreator())
+            {
+                return await ctx.Meetings.AsNoTracking()
+                    .Select(m => new LookupItem { Id = m.Id, DisplayMember = m.Title})
                     .ToListAsync();
 
             }
